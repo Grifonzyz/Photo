@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photography Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #000000;
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            padding: 15px 0;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            color: #f39c12;
+            background-color: rgba(243, 156, 18, 0.1);
+        }
+
+        .content {
+            padding-top: 100px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav ul li a {
+            text-decoration: none; /* Убираем стандартное подчеркивание у ссылок */
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: color 0.3s ease, border-bottom 0.3s ease;
+            border-bottom: 2px solid transparent; /* Изначально прозрачное подчеркивание */
+            position: relative; /* Для псевдоэлемента */
+        }
+
+        nav ul li a:hover {
+            color: #f39c12;
+            border-bottom: 2px solid #f39c12; /* Подчеркивание при наведении */
+        }
+
+        /* Подчеркивание заголовков секций с кастомным стилем */
+        h1 {
+            font-size: 3rem;
+            color: #f39c12;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 5px solid #f39c12; /* Подчеркивание заголовков */
+            padding-bottom: 10px; /* Отступ между текстом и линией */
+        }
+
+        p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            color: #ccc;
+        }
+
+        .album-section {
+            margin-bottom: 80px;
+        }
+
+        .album-section h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #f39c12;
+            position: relative;
+            display: inline-block;
+        }
+
+        .album-section h2:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: #f39c12;
+            left: 0;
+            bottom: -10px;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .large-photo {
+            flex: 0 0 40%;
+            max-width: 40%;
+            position: relative;
+        }
+
+        .large-photo img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+        }
+
+        .large-photo img:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.9);
+        }
+
+        .thumbnail-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .thumbnail-grid img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .thumbnail-grid img:hover {
+            transform: scale(1.12);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Fullscreen Photo Modal */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.95);
+        }
+
+        .photo-modal-content {
+            display: block;
+            margin: auto;
+            max-width: 70%;
+            max-height: 70%;
+            margin-top: 90px;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #f39c12;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Age Check Modal */
+        .age-check-modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.99); /* Полупрозрачный черный фон */
+            z-index: 1000;
+        }
+
+        .age-check-content {
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .age-check-content h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .age-check-content button {
+            background-color: #f39c12;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .age-check-content button:hover {
+            background-color: #e67e22;
+        }
+    </style>
+    <!-- Модальное окно проверки возраста -->
+    <div id="ageCheckModal" class="age-check-modal">
+        <div class="age-check-content">
+            <h2>Age Verification</h2>
+            <p>This content is intended for adults. Please confirm that you are at least 18 years old to proceed.</p>
+            <button onclick="confirmAge()">I am 18 or older</button>
+        </div>
+    </div>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="content">
+<h1>Intimate photography</h1>
+    </div>
+
+    <div class="content">
+        <p>Intimate photography captures the subtle and profound beauty of human connection, revealing the essence of vulnerability and trust between individuals. It’s a delicate art that transforms moments of closeness into timeless imagery, celebrating the raw, authentic emotions that define our most cherished relationships.</p>
+
+        <!-- Album 1 -->
+        <div class="album-section">
+            <h2>Couple's photo shoot</h2>
+            <div class="gallery-container">
+                <div class="large-photo">
+                    <img src="img/Intimate/d1.jpg" alt="Urban Large Photo" onclick="openPhotoModal(this)">
+                </div>
+                <div class="thumbnail-grid">
+                    <img src="img/Intimate/d2.jpg" alt="Urban Photo 1" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/d3.jpg" alt="Urban Photo 2" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/d4.jpg" alt="Urban Photo 3" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/d5.jpg" alt="Urban Photo 4" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/d1.jpg" alt="Urban Photo 5" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/d7.jpg" alt="Urban Photo 6" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/d8.jpg" alt="Urban Photo 7" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/d9.jpg" alt="Urban Photo 8" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/d10.jpg" alt="Urban Photo 9" onclick="openPhotoModal(this)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Album 2 -->
+        <div class="album-section">
+            <h2>beautiful underwear</h2>
+            <div class="gallery-container">
+                <div class="large-photo">
+                    <img src="img/Intimate/f1.jpg" alt="Nature Large Photo" onclick="openPhotoModal(this)">
+                </div>
+                <div class="thumbnail-grid">
+                    <img src="img/Intimate/f5.jpg" alt="Nature Photo 1" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/f3.jpg" alt="Nature Photo 2" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/f4.jpg" alt="Nature Photo 3" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/f7.jpg" alt="Nature Photo 4" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/f8.jpg" alt="Nature Photo 5" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/f2.jpg" alt="Nature Photo 6" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/f6.jpg" alt="Nature Photo 7" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/f1.jpg" alt="Nature Photo 8" onclick="openPhotoModal(this)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Album 3 -->
+        <div class="album-section">
+            <h2>Naked beauty</h2>
+            <div class="gallery-container">
+                <div class="large-photo">
+                    <img src="img/Intimate/s1.jpg" alt="Portraits Large Photo" onclick="openPhotoModal(this)">
+                </div>
+                <div class="thumbnail-grid">
+                    <img src="img/Intimate/s2.jpg" alt="Portrait Photo 1" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/s1.jpg" alt="Portrait Photo 1" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/s3.jpg" alt="Portrait Photo 1" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/s4.jpg" alt="Portrait Photo 1" onclick="openPhotoModal(this)">
+                    <img src="img/Intimate/s5.jpg" alt="Portrait Photo 1" onclick="openPhotoModal(this)"> 
+                </div>
+            </div>
+        </div>
+
+        <!-- Fullscreen Photo Modal -->
+        <div id="photoModal" class="photo-modal">
+            <span class="close" onclick="closePhotoModal()">&times;</span>
+            <img class="photo-modal-content" id="photoImg">
+        </div>
+    </div>
+
+    <script>
+        // Function to open photo modal
+        function openPhotoModal(imgElement) {
+            const photoModal = document.getElementById("photoModal");
+            const photoImg = document.getElementById("photoImg");
+
+            photoModal.style.display = "block";
+            photoImg.src = imgElement.src;
+        }
+
+        // Function to close photo modal
+        function closePhotoModal() {
+            const photoModal = document.getElementById("photoModal");
+            photoModal.style.display = "none";
+        }
+
+        // Age verification logic
+        function showAgeCheckModal() {
+            const ageCheckModal = document.getElementById("ageCheckModal");
+            ageCheckModal.style.display = "flex";
+        }
+
+        function confirmAge() {
+            const ageCheckModal = document.getElementById("ageCheckModal");
+            ageCheckModal.style.display = "none";
+            localStorage.setItem("ageVerified", "true");
+        }
+
+        function checkAge() {
+            if (localStorage.getItem("ageVerified") !== "true") {
+                showAgeCheckModal();
+            }
+        }
+
+        // Run age check on page load
+        window.onload = checkAge;
+    </script>
+    
+    
+</body>
+
+</html>

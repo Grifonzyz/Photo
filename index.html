@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photographer's Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px 0;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+            border-bottom: 2px solid transparent;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: #f39c12;
+            border-bottom: 2px solid #f39c12;
+        }
+
+        .section {
+            padding: 120px 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .contact-link {
+    text-decoration: none;
+    color: #fff; /* Цвет ссылок, чтобы они не выделялись */
+}
+
+.contact-link:hover {
+    color: #f39c12; /* Цвет ссылки при наведении, если нужно */
+}
+
+        h1 {
+            font-size: 3rem;
+            color: #f39c12;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 5px solid #f39c12;
+            padding-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding-top: 40px;
+            margin: 0 200px;
+        }
+
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            transition: transform 0.4s ease;
+            cursor: pointer;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.05);
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .portfolio-item img:hover {
+            transform: scale(1.1);
+        }
+
+        .portfolio-item .portfolio-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            text-align: center;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .portfolio-item:hover .portfolio-text {
+            opacity: 1;
+        }
+
+        .services-list {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+            padding-top: 20px;
+        }
+
+        .services-list h3 {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .services-list h4 {
+            font-size: 1rem;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .services-list p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            padding: 20px;
+            text-align: center;
+            background-color: #111;
+        }
+
+        footer p {
+            margin: 5px;
+            color: #777;
+        }
+
+       /* Стили для калькулятора */
+       #calculator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.9); /* Черный фон */
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Добавляем тень */
+            z-index: 1000;
+            width: 300px;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        #calculator.show {
+            display: block;
+        }
+
+        #calculator h2 {
+            font-size: 1.5rem;
+            color: #f39c12;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        #calculator label {
+            display: block;
+            margin-bottom: 10px;
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        #calculator select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: background-color 0.3s ease;
+        }
+
+        #calculator select:hover {
+            background-color: #444;
+        }
+
+        #calculator button {
+            background-color: #f39c12;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #calculator button:hover {
+            background-color: #e67e22;
+            transform: scale(1.05); /* Небольшое увеличение при наведении */
+        }
+
+        #calculator button:active {
+            transform: scale(0.95); /* Сжатие кнопки при нажатии */
+        }
+
+        #calculator #result {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        /* Анимация появления */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#" onclick="toggleCalculator(event)">Calculator</a></li>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="portfolio" class="section">
+        <div>
+            <h1>Portfolio</h1>
+            <p>I am the Time Lord, capable of stopping the world with a single press of a button, capturing it in all its beauty and preserving the most vivid and beautiful emotions.</p>
+            <div class="portfolio-grid">
+                <div class="portfolio-item" onclick="openAlbum('Personal.html')">
+                    <img src="img/Personal.jpg" alt="Personal Photography">
+                    <div class="portfolio-text">Personal Photography</div>
+                </div>
+                <div class="portfolio-item" onclick="openAlbum('Portrait.html')">
+                    <img src="img/Portrait.jpg" alt="Portrait Photography">
+                    <div class="portfolio-text">Portrait Photography</div>
+                </div>
+                <div class="portfolio-item" onclick="openAlbum('Commercial.html')">
+                    <img src="img/Commercial.jpg" alt="Commercial Photography">
+                    <div class="portfolio-text">Commercial Photography</div>
+                </div>
+                <div class="portfolio-item" onclick="openAlbum('Intimate.html')">
+                    <img src="img/Intimate.jpg" alt="Intimate Photography">
+                    <div class="portfolio-text">Intimate Photography</div>
+                </div>
+                <div class="portfolio-item" onclick="openAlbum('Landscape.html')">
+                    <img src="img/Landscape.jpg" alt="Landscape Photography">
+                    <div class="portfolio-text">Landscape Photography</div>
+                </div>
+                <div class="portfolio-item" onclick="openAlbum('Animal.html')">
+                    <img src="img/Animal.jpg" alt="Animal Photography">
+                    <div class="portfolio-text">Animal Photography</div>
+                </div>
+                <div class="portfolio-item" onclick="openAlbum('Artificial.html')">
+                    <img src="img/Event.jpg" alt="Artificial Intelligence">
+                    <div class="portfolio-text">Artificial Intelligence</div>
+                </div>
+            </div>
+            <h1>Video Portfolio</h1>
+            <p>Explore some of my video projects that capture moments and stories in motion.</p>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <video controls width="100%">
+                        <source src="videos/video1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="portfolio-item">
+                    <video controls width="100%">
+                        <source src="videos/video2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="portfolio-item">
+                    <video controls width="100%">
+                        <source src="videos/video3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="portfolio-item">
+                    <video controls width="100%">
+                        <source src="videos/video4.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section">
+        <div>
+            <h1>Services</h1>
+            <p>I work in the expansive field of photography and eagerly take on any interesting and creative projects, whether it's weddings, family events, or even intimate photos of your beautiful, youthful body.</p>
+            <div class="services-list">
+                <div>
+                    <h3>Street Photography</h3>
+                    <p>Capture Life in Motion: Street Photography offers an authentic, candid look at the world around you. This style embraces the raw energy of urban landscapes, blending real-life moments with dynamic settings. Perfect for those who love spontaneous and natural images, it immortalizes the unposed beauty of daily life. If you're seeking photos that tell a story and convey emotion, Street Photography brings out the true essence of individuality in the heart of the city.</p>
+                </div>
+                <div>
+                    <h3>Home Photography</h3>
+                    <p>Comfort Meets Intimacy: Home Photography captures the warmth and personality of your most cherished space. Ideal for those looking for a relaxed, personal setting, this style highlights authentic, cozy moments in a place that truly reflects who you are. Whether you're celebrating family milestones or simply want a collection of candid, heartfelt images, a home session allows for a genuine portrayal of your everyday life in the comfort of your own surroundings.</p>
+                </div>
+                <div>
+                    <h3>Art Photography</h3>
+                    <p>Unleash Creativity: Art Photography goes beyond the ordinary to explore imaginative and unique concepts. This style is perfect for those who want to express themselves through bold, artistic visuals. Whether it's through dramatic lighting, abstract compositions, or experimental techniques, an art photography session transforms your vision into captivating and thought-provoking images that stand out as true works of art.</p>
+                </div>
+                <div>
+                    <h3>Lifestyle Photography</h3>
+                    <p>Capture Authentic Moments: Lifestyle Photography is all about documenting real-life situations and natural interactions in a beautiful, candid way. This style is perfect for those who want to preserve everyday moments with a touch of elegance, showcasing genuine emotions and connections. Whether it's at home or outdoors, lifestyle photography creates timeless images that tell the story of your life as it happens.</p>
+                </div>
+                <div>
+                    <h3>Intimate Photography</h3>
+                    <p>Celebrate Vulnerability and Connection: Intimate Photography is designed to capture the beauty of your most personal moments in a tasteful, empowering way. Whether for yourself or a partner, this style focuses on creating a safe, comfortable environment to express sensuality, confidence, and emotion. It’s about embracing who you are and turning intimate, private moments into elegant, artistic imagery.</p>
+                </div>
+                <div>
+                    <h3>Wedding Photography</h3>
+                    <p>Capture Your Love Story: Wedding Photography is all about preserving the magic of your special day, turning every emotion, every glance, and every unforgettable moment into timeless memories. From candid laughter to the beauty of your vows, this style focuses on telling your unique love story with elegance and authenticity. It’s not just about the photos—it’s about creating a visual legacy of your celebration that you can cherish forever.</p>
+                </div>
+                <div>
+                    <h3>Family Photography</h3>
+                    <p>Celebrate Togetherness: Family Photography captures the heartwarming connections between loved ones, freezing moments of joy, laughter, and togetherness in time. This style focuses on the natural bonds and interactions within your family, whether it’s playful moments with the kids or intimate embraces. It’s perfect for preserving memories that show the love and personality of each family member, creating timeless keepsakes that you’ll cherish for generations.</p>
+                </div>
+                <div>
+                    <h3>Maternity Photography</h3>
+                    <p>Embrace the Journey: Maternity Photography beautifully celebrates the magical time of pregnancy, capturing the love, anticipation, and excitement before your baby arrives. This style is all about highlighting the beauty of motherhood, with soft, intimate moments that honor the bond between you and your little one. It’s a timeless way to document this special chapter, creating memories you’ll treasure as you look back on the start of your family’s journey.</p>
+                </div>
+                <div>
+                    <h3>Maternity Photography</h3>
+                    <p>Embrace the Journey: Maternity Photography beautifully celebrates the magical time of pregnancy, capturing the love, anticipation, and excitement before your baby arrives. This style is all about highlighting the beauty of motherhood, with soft, intimate moments that honor the bond between you and your little one. It’s a timeless way to document this special chapter, creating memories you’ll treasure as you look back on the start of your family’s journey.</p>
+                </div>
+                <div>
+                    <h3>Children’s Photography</h3>
+                    <p>Cherishing Childhood: Children’s Photography captures the innocence, joy, and wonder of your child’s early years. This style focuses on genuine emotions and candid moments, preserving the laughter, curiosity, and playfulness that define childhood. It’s the perfect way to freeze time and create a visual story of your child’s unique personality, ensuring these precious memories will be remembered and cherished for years to come.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div>
+            <h1>About Me</h1>
+            <p>I am a professional photographer with a passion for capturing life's most beautiful moments. With years of experience and a keen eye for detail, I strive to create images that are not just visually stunning but also emotionally impactful.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div>
+            <h1>Contact</h1>
+            <p>Feel free to reach out to me for any inquiries or to book a session. Let's create something beautiful together.</p>
+            <p>Email: <a href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCJTLGfGXGLGBnCQjKGDhgHrKCJkGcwCzNHXfJHdlfplWxKpDFvzHpfnjqNvxRWvrXwKxFmL" target="_blank" class="contact-link">Photo.graf.chik@gmail.com</a></p>
+            <p>Telegram: <a href="https://t.me/Photografchik" target="_blank" class="contact-link">@Photografchik</a></p>
+            <p>Phone: +370 624 61 642 </p>
+            <p>Phone: +370 622 15 132 </p>
+            <p>Location: <a href="https://www.google.com/search?q=vilnius%2C+lithuania&oq=VIlnius&gs_lcrp=EgZjaHJvbWUqBggAECMYJzIGCAAQIxgnMgYIARBFGDkyBggCEEUYOzIMCAMQLhgUGIcCGIAEMgwIBBAjGCcYgAQYigUyBggFEEUYPDIGCAYQRRg9MgYIBxBFGDzSAQgyMDIxajBqOagCALACAQ&sourceid=chrome&ie=UTF-8" target="_blank" class="contact-link">Vilnius, Lithuania</a></p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Photographer's Portfolio. All rights reserved.</p>
+    </footer>
+
+    <div id="calculator" class="show">
+        <button onclick="toggleCalculator()">Close</button>
+        <h2>Photography Session Cost Calculator</h2>
+        
+        <!-- Выбор типа фотосессии -->
+        <label for="session-type">Type of Session:</label>
+        <select id="session-type" onchange="updateOptions()">
+            <option value="personal">Personal Photoshoot</option>
+            <option value="group">Group Photoshoot</option>
+            <option value="video">Video Shoot</option>
+            <option value="commercial">Commercial Photography</option>
+        </select>
+        
+        <!-- Выбор продолжительности -->
+        <label for="duration">Duration:</label>
+        <select id="duration">
+            <option value="1">1 hour</option>
+            <option value="2">2 hours</option>
+            <option value="3">3 hours</option>
+        </select>
+    
+        <!-- Количество людей -->
+        <label for="people" id="people-label">Number of People:</label>
+        <select id="people">
+            <option value="no">No</option>
+            <option value="1">1 person</option>
+            <option value="2">2 people (+€10)</option>
+            <option value="3">3 people (+€20)</option>
+            <option value="4" class="video-only">More than 3 people</option>
+        </select>
+        
+        <!-- Стиль фотосессии -->
+        <label for="style" id="style-label">Style of Session:</label>
+        <select id="style">
+            <option value="0.9">Street Photoshoot (x0.9)</option>
+            <option value="0.8">Home Photoshoot (x0.8)</option>
+            <option value="1.2">Art Photoshoot (x1.2)</option>
+            <option value="0.8">Lifestyle (x0.8)</option>
+            <option value="1">Intimate Photoshoot (x1)</option>
+            <option value="1.6">Wedding Photography (x1.6)</option>
+            <option value="1.4">Family Photoshoot (x1.4)</option>
+            <option value="1.4">Maternity Photoshoot (x1.4)</option>
+            <option value="1.2">Children's Photoshoot (x1.2)</option>
+            <option value="1" class="commercial-only">Commercial Photography (x1)</option>
+            <option value="1" class="video-only">Video Shoot (x1)</option>
+        </select>
+        
+        <button onclick="calculatePrice()">Calculate Price</button>
+        
+        <div id="result">Total Price: €0.00</div>
+    </div>
+    <style>
+        .hidden {
+            display: none;
+        }
+        .show {
+            display: block;
+        }
+    </style>
+    <script>
+    function toggleCalculator() {
+            const calculator = document.getElementById('calculator');
+            const isVisible = calculator.classList.contains('show');
+            calculator.classList.toggle('show', !isVisible);
+    }
+    function updateOptions() {
+    const sessionType = document.getElementById('session-type').value;
+    const peopleSelect = document.getElementById('people');
+    const styleSelect = document.getElementById('style');
+
+    // Скрываем все опции для количества людей
+    peopleSelect.querySelectorAll('option').forEach(option => {
+        option.style.display = 'none';
+    });
+
+    // Скрываем все опции для стиля
+    styleSelect.querySelectorAll('option').forEach(option => {
+        option.style.display = 'none';
+    });
+
+    if (sessionType === 'video') {
+        peopleSelect.querySelector('option[value="4"]').style.display = 'block';
+        styleSelect.querySelector('.video-only').style.display = 'block';
+    } else if (sessionType === 'commercial') {
+        peopleSelect.querySelector('option[value="no"]').style.display = 'block';
+        styleSelect.querySelector('.commercial-only').style.display = 'block';
+    } else if (sessionType === 'group') {
+        peopleSelect.querySelector('option[value="4"]').style.display = 'block';
+    } else {
+        // Для персональной фотосессии
+        peopleSelect.querySelector('option[value="1"]').style.display = 'block';
+        peopleSelect.querySelector('option[value="2"]').style.display = 'block';
+        peopleSelect.querySelector('option[value="3"]').style.display = 'block';
+        styleSelect.querySelectorAll('option').forEach(option => {
+            option.style.display = 'block';
+        });
+    }
+
+    document.getElementById('style-label').style.display = 'block';
+}
+
+function calculatePrice() {
+    const sessionType = document.getElementById('session-type').value;
+    const duration = parseInt(document.getElementById('duration').value);
+    const people = document.getElementById('people').value;
+    const styleFactor = parseFloat(document.getElementById('style').value);
+
+    let basePrice = 70; // базовая цена за 1 час
+    let totalPrice = 0;
+
+    if (sessionType === 'commercial') {
+        totalPrice = 100 * duration; // Коммерческая фотография
+    } else if (sessionType === 'video') {
+        totalPrice = 100 * duration; // Видео съемка с учетом продолжительности
+    } else {
+        totalPrice = basePrice * duration;
+
+        // Применение скидки в зависимости от продолжительности
+        if (duration === 2) {
+            totalPrice *= 0.9; // 10% скидка
+        } else if (duration === 3) {
+            totalPrice *= 0.8; // 20% скидка
+        }
+
+        if (sessionType === 'group') {
+            totalPrice += 30; // Доплата за групповую фотосессию
+        }
+
+        if (people === '2') {
+            totalPrice += 10; // Доплата за 2 человека
+        } else if (people === '3') {
+            totalPrice += 20; // Доплата за 3 человека
+        }
+
+        totalPrice *= styleFactor;
+    }
+
+    // Округляем итоговую цену до ближайшего числа, кратного 5
+    totalPrice = Math.round(totalPrice / 5) * 5;
+
+    // Выводим отладочное сообщение для проверки значений
+    console.log(`Session Type: ${sessionType}`);
+    console.log(`Duration: ${duration}`);
+    console.log(`People: ${people}`);
+    console.log(`Style Factor: ${styleFactor}`);
+    console.log(`Total Price (before rounding): €${totalPrice}`);
+
+    document.getElementById('result').innerHTML = `Total Price: €${totalPrice.toFixed(2)}`;
+    
+}
+
+
+// Вызовите updateOptions() при загрузке страницы для установки начального состояния
+window.onload = updateOptions;
+function openAlbum(url) {
+            window.location.href = url;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('nav ul li a');
+
+            function activateSection() {
+                const scrollPosition = window.scrollY;
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 80;
+                    const sectionHeight = section.offsetHeight;
+
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href').substring(1);
+                    const section = document.getElementById(href);
+
+                    if (section.classList.contains('active')) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', activateSection);
+            activateSection();
+        });
+    </script>
+
+</body>
+
+</html>
